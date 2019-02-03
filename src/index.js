@@ -2,6 +2,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
+//TODO: put in utils
+const getPlay = xIsNext => xIsNext ? 'X' : 'O';
+const calculateWinner = squares => ([
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ].reduce((acc, [a,b,c]) =>
+    squares[a] && squares[a] === squares[b] && squares[a] === squares[c]
+      ? squares[a]
+      : acc || null
+  , null));
+
+//TODO: put in own file
 const Square = ({value, onClick}) => (
   <button
       className="square"
@@ -10,8 +28,7 @@ const Square = ({value, onClick}) => (
     />
 );
 
-const getPlay = xIsNext => xIsNext ? 'X' : 'O';
-
+//TODO: put in own file, pass in or import getPlay and calculateWinner
 class Board extends React.Component {
   constructor(props) {
     super(props);
@@ -22,6 +39,9 @@ class Board extends React.Component {
   }
 
   handleClick(i) {
+    if (calculateWinner(this.state.squares) || this.state.squares[i]) {
+      return;
+    }
     const play = getPlay(this.state.xIsNext);
 
     this.setState({
@@ -43,8 +63,10 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: ' + getPlay(this.state.xIsNext);
-
+    const winner = calculateWinner(this.state.squares);
+    const status = winner
+      ? 'Winner: ' + winner
+      : 'Next player: ' + getPlay(this.state.xIsNext);
     return (
       <div>
         <div className="status">{status}</div>
