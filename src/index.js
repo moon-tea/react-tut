@@ -10,19 +10,28 @@ const Square = ({value, onClick}) => (
     />
 );
 
+const getPlay = xIsNext => xIsNext ? 'X' : 'O';
+
 class Board extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       squares: Array(9).fill(null),
+      xIsNext: true,
     };
   }
 
   handleClick(i) {
+    const play = getPlay(this.state.xIsNext);
+
     this.setState({
       squares: this.state.squares.map(
-        (square, index) => index === i ? 'X' : square
-      )
+        (square, index) =>
+          index === i
+            ? play
+            : square
+      ),
+      xIsNext: !this.state.xIsNext
     });
   }
 
@@ -34,7 +43,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const status = 'Next player: X';
+    const status = 'Next player: ' + getPlay(this.state.xIsNext);
 
     return (
       <div>
